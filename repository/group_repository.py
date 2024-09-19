@@ -11,7 +11,11 @@ def create_table_group():
     CREATE TABLE IF NOT EXISTS groups (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    num_of_players INT NOT NULL
+    player1 INT,
+    player2 INT,
+    player3 INT,
+    player4 INT,
+    player5 INT
 )''')
 
     connection.commit()
@@ -21,13 +25,12 @@ def create_table_group():
 
 
 
-
 def create_group(group: Group) -> int:
     with get_db_connection() as connection, connection.cursor() as cursor:
         cursor.execute("""
-            INSERT INTO groups (name, num_of_players)
+            INSERT INTO groups (name, player1,player2, player3,player4,player5 )
             VALUES (%s, %s) RETURNING id
-        """, (group.name, group.num_of_players))
+        """, (group.name, group.player1 ,group.player2 ,group.player3 ,group.player4, group.player5))
         new_id = cursor.fetchone()['id']
         connection.commit()
         return new_id

@@ -19,7 +19,7 @@ def setup_group_database():
     connection.close()
 
 def test_create_group(setup_group_database):
-    new_group = Group(id=None, name="Group A", num_of_players=5)
+    new_group = Group(id=None, name="Group A", player1=4, player2=4, player3=1, player4=1, player5=0)
     create = create_group(new_group)
     assert create
 

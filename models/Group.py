@@ -2,7 +2,11 @@ from dataclasses import dataclass
 
 @dataclass
 class Group:
-    id : None
     name : str
-    num_of_players : int
+    player1 : int
+    player2 : int
+    player3 : int
+    player4 : int
+    player5 : int
+    id : None
 

@@ -67,7 +67,9 @@ def get_players_by_positionn(season, position):
                       WHERE seasons.season = %s AND players.position = %s;  
                        """, (season, position))
         players = cursor.fetchall()
-        all_players = [{**f, "atr": calculate_atr(f["assists"], f["turnovers"])} for f in players]
+        all_players = [{**f, "atr": calculate_atr(f["assists"], f["turnovers"]),
+                        "average" : get_average(f["points"], f["season"], f["position"])}
+                       for f in players]
         return all_players
 
 
@@ -80,7 +82,7 @@ def get_average(points, year, position):
                  AND seasons.position = %s
         """,(year, position))
         players = cursor.fetchone()
- 
+
     return players
 
 
@@ -88,30 +90,8 @@ def get_average(points, year, position):
 
 
 
-print(get_average(252, 2024, "SG"))
-
-
 def calculate_atr(assists, turnovers):
     return assists / turnovers if turnovers > 0 else assists
 
-
-
-
-
-
-
-# def delete_user( id : int) -> int:
-#     with get_db_connection() as connection, connection.cursor() as cursor:
-#         cursor.execute("DELETE FROM users WHERE id = %s RETURNING id", (id,))
-#         _id = cursor.fetchone()['id']
-#         return _id
-#
-#
-#
-# def update_user(user : User) -> int:
-#     with get_db_connection() as connection, connection.cursor() as cursor:
-#         cursor.execute("UPDATE users SET first = %s, last = %s, email = %s WHERE id = %s RETURNING id", (user.first, user.last, user.email, user.id))
-#         _id = cursor.fetchone()["id"]
-#         return _id
 
 
