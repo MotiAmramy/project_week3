@@ -1,6 +1,12 @@
+from functools import partial
+from pickle import PROTO
+
 from models.Player import Player
 from repository.database import get_db_connection
 from typing import List, Optional
+from toolz import pipe
+
+from repository.season_repository import find_all_seasons
 
 
 def create_table_player():
@@ -53,14 +59,6 @@ def get_players_by_name(p_name):
         return player
 
 
-
-
-def calculate_atr(assists, turnovers):
-    return assists / turnovers if turnovers > 0 else assists
-
-
-
-
 def get_players_by_positionn(season, position):
     with get_db_connection() as connection, connection.cursor() as cursor:
         cursor.execute("""SELECT players.*, seasons.*
@@ -69,11 +67,33 @@ def get_players_by_positionn(season, position):
                       WHERE seasons.season = %s AND players.position = %s;  
                        """, (season, position))
         players = cursor.fetchall()
-        all_players = [{**f} for f in players]
+        all_players = [{**f, "atr": calculate_atr(f["assists"], f["turnovers"])} for f in players]
         return all_players
 
 
-    
+
+def get_average(points, year, position):
+    with get_db_connection() as connection, connection.cursor() as cursor:
+        cursor.execute("""
+               SELECT SUM(points) AS total_points FROM seasons
+                WHERE seasons.season = %s
+                 AND seasons.position = %s
+        """,(year, position))
+        players = cursor.fetchone()
+ 
+    return players
+
+
+
+
+
+
+print(get_average(252, 2024, "SG"))
+
+
+def calculate_atr(assists, turnovers):
+    return assists / turnovers if turnovers > 0 else assists
+
 
 
 
