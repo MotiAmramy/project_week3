@@ -9,7 +9,8 @@ def create_table_player():
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS players (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(200) NOT NULL
+    name VARCHAR(200) NOT NULL,
+    position VARCHAR(6) NOT NULL
     )
     ''')
     connection.commit()
@@ -21,9 +22,9 @@ def create_player(player: Player) -> int:
     with get_db_connection() as connection, connection.cursor() as cursor:
         print(cursor)
         cursor.execute("""
-            INSERT INTO players (name)
-            VALUES (%s) RETURNING id
-        """, (player.name,))
+            INSERT INTO players (name, position)
+            VALUES (%s, %s) RETURNING id
+        """, (player.name, player.position))
         player_id = cursor.fetchone()['id']  # Fetch the newly created player's ID
         connection.commit()  # Commit the transaction
         return player_id
@@ -44,9 +45,13 @@ def find_player_by_id(player_id: int):
     player = cursor.fetchone()
     cursor.close()
     connection.close()
-
     return player
 
+def get_players_by_name(p_name):
+    with get_db_connection() as connection, connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM players WHERE name = %s", (p_name,))
+        player = cursor.fetchone()['id']
+        return player
 
 
 

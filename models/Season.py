@@ -2,7 +2,6 @@ from dataclasses import dataclass
 
 @dataclass
 class Season:
-    id: None
     player_id: None
     position: str
     age: int
@@ -33,4 +32,5 @@ class Season:
     points: int
     team: str
     season: int
+    id: int = None
 

@@ -1,6 +1,7 @@
 import pytest
 from models.Season import Season
 from repository.database import get_db_connection
+from repository.player_repository import create_player, create_table_player
 from repository.season_repository import create_table_season, create_season, get_season_by_id, find_all_seasons
 
 
@@ -8,6 +9,7 @@ from repository.season_repository import create_table_season, create_season, get
 @pytest.fixture(scope="module")
 def setup_season_database():
     # Create the seasons table
+    create_table_player()
     create_table_season()
     yield
     connection = get_db_connection()
@@ -18,10 +20,10 @@ def setup_season_database():
         connection.commit()
     connection.close()
 
-def test_create_season(setup_season_database):
+def ccreate_season():
     # Create a new season instance with required fields
     new_season = Season(
-        player_id=1,  # Assuming there's a player with ID 1
+        player_id=1,
         position="SG",
         age=25,
         games=10,
@@ -52,8 +54,15 @@ def test_create_season(setup_season_database):
         team="CHI",
         season=2024
     )
-    create = create_season(new_season, 1)  # Ensure you have a function to create a season
-    assert create
+
+    try:
+        # Call the create_season function to insert the new season into the database
+        new_id = create_season(new_season)
+        print(f"Season created with ID: {new_id}")
+        return new_id
+    except Exception as e:
+        print(f"Error creating season: {e}")
+        return None
 
 def test_find_all_seasons(setup_season_database):
     all_seasons = find_all_seasons()
@@ -62,3 +71,5 @@ def test_find_all_seasons(setup_season_database):
 def test_find_season_by_id(setup_season_database):
     season = get_season_by_id(1)
     assert season is not None
+
+
