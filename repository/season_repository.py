@@ -88,7 +88,7 @@ def find_all_seasons() -> List[Season]:
         with connection.cursor() as cursor:
             cursor.execute("SELECT * FROM seasons")
             res = cursor.fetchall()
-            all_seasons = [Season(*row) for row in res]  # Unpacking row values into Season
+            all_seasons = [Season(**row) for row in res]  # Unpacking row values into Season
             return all_seasons
 
 def get_season_by_id(season_id: int) -> Optional[Season]:

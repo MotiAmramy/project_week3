@@ -20,7 +20,6 @@ def create_table_player():
 
 def create_player(player: Player) -> int:
     with get_db_connection() as connection, connection.cursor() as cursor:
-        print(cursor)
         cursor.execute("""
             INSERT INTO players (name, position)
             VALUES (%s, %s) RETURNING id
@@ -52,6 +51,30 @@ def get_players_by_name(p_name):
         cursor.execute("SELECT * FROM players WHERE name = %s", (p_name,))
         player = cursor.fetchone()['id']
         return player
+
+
+
+
+def calculate_atr(assists, turnovers):
+    return assists / turnovers if turnovers > 0 else assists
+
+
+
+
+def get_players_by_positionn(season, position):
+    with get_db_connection() as connection, connection.cursor() as cursor:
+        cursor.execute("""SELECT players.*, seasons.*
+                      FROM players 
+                      INNER JOIN seasons ON seasons.player_id = players.id 
+                      WHERE seasons.season = %s AND players.position = %s;  
+                       """, (season, position))
+        players = cursor.fetchall()
+        all_players = [{**f} for f in players]
+        return all_players
+
+
+    
+
 
 
 

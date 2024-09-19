@@ -26,13 +26,4 @@ def drop_table():
 
 
 
-if __name__ == '__main__':
-    print("Fd")
-    drop_table()
-    create_table_player()
-    create_seasons_tables()
-    create_player_and_season(2024)
-    print(find_all_players())
-    print(find_all_seasons())
-
 
